@@ -7,3 +7,4 @@ ios/RCTCamera.xcodeproj/project.xcworkspace
 .idea
 *.iml
 android/build
+lib
