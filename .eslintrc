@@ -21,6 +21,8 @@
     "prefer-template": 0,
     "no-param-reassign": 0,
     "import/no-unresolved": 0,
+    "global-require": 0,
+    "no-use-before-define": 0,
 
     "react/jsx-closing-bracket-location": [1, "after-props"],
     "react/jsx-filename-extension": 0

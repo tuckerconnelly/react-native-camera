@@ -1,20 +1,18 @@
-import { Platform } from 'react-native'
-// import IOSCamera from './index.ios.js'
-// import AndroidCamera from './index.android.js'
-import WebCamera from './index.web.js'
+import React from './React'
+const { Platform } = React
 
 let Camera
 
-// switch (Platform.OS) {
-//   case 'ios':
-//     Camera = IOSCamera
-//     break
-//   case 'android':
-//     Camera = AndroidCamera
-//     break
-//   case 'web':
-//     Camera = WebCamera
-//     break
-// }
+switch (Platform.OS) {
+  case 'ios':
+    Camera = require('./index.ios.js')
+    break
+  case 'android':
+    Camera = require('./index.android.js')
+    break
+  case 'web':
+    Camera = require('./index.web.js')
+    break
+}
 
-export default WebCamera
+export default Camera.default
