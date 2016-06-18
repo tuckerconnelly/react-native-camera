@@ -1,17 +1,16 @@
-import React from './React'
-const { Platform } = React
+import { Platform } from 'react-native-universal'
 
 let Camera
 
 switch (Platform.OS) {
   case 'ios':
-    Camera = require('./index.ios.js')
+    Camera = require('./Camera.js')
     break
   case 'android':
-    Camera = require('./index.android.js')
+    Camera = require('./Camera.js')
     break
   case 'web':
-    Camera = require('./index.web.js')
+    Camera = require('./CameraWeb.js')
     break
 }
 

@@ -1,5 +1,4 @@
-import React from './React'
-const { PropTypes, Component } = React
+import React, { PropTypes, Component } from 'react'
 
 export default class Camera extends Component {
   static constants = {
@@ -56,12 +55,15 @@ export default class Camera extends Component {
   static propTypes = {
     aspect: PropTypes.string,
     captureAudio: PropTypes.bool,
+
     style: PropTypes.object,
+    children: PropTypes.node,
   };
 
   static defaultPropTypes = {
     aspect: Camera.constants.Aspect.fill,
     captureAudio: true,
+
     style: {},
   };
 
@@ -70,60 +72,44 @@ export default class Camera extends Component {
 
     navigator.mediaDevices.getUserMedia({
       audio: this.props.captureAudio,
-      video: { width: 1920, height: 1080 },
+      video: true,
     })
       .then(stream => {
         video.src = URL.createObjectURL(stream)
-        // HACK Chrome isn't updating video immediately, remove
-        // setTimeout when bug is figured out
-        setTimeout(() => this.forceUpdate(), 1000)
       })
   }
 
   get aspectStyles() {
-    if (!this.refs.video) return {}
-
-    const { innerWidth, innerHeight } = window
     switch (this.props.aspect) {
-      case Camera.constants.Aspect.fit:
-        return innerWidth > innerHeight ?
-          { height: '100%' } :
-          { width: '100%' }
-      case Camera.constants.Aspect.fill:
-        return innerWidth > innerHeight ?
-          { width: '100%' } :
-          { height: '100%' }
-      case Camera.constants.Aspect.stretch:
-        return { width: '100%', height: '100%' }
+      case Camera.constants.Aspect.fit: return { objectFit: 'contain' }
+      case Camera.constants.Aspect.fill: return { objectFit: 'cover' }
+      case Camera.constants.Aspect.stretch: return { objectFit: 'fill' }
     }
     return {}
   }
 
   render() {
-    const { style, ...other } = this.props
-
+    const { children, style, ...other } = this.props
     return (
-      <div
-        style={{ ...styles.base, ...style }}
-        {...other}>
+      <div {...other}>
         <video
           ref="video"
-          style={{
-            ...styles.video,
-            ...this.aspectStyles,
-          }} />
+          autoPlay
+          style={{ ...styles.video, ...this.aspectStyles, ...style }} />
+        {children}
       </div>
     )
   }
 }
 
 const styles = {
-  base: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-
   video: {
-    objectFit: 'cover',
+    display: 'flex',
+    flex: 1,
+
+    width: '100%',
+    height: '100%',
+
+    transform: 'rotateY(180deg)',
   },
 }
