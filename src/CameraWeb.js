@@ -1,4 +1,8 @@
-import React, { PropTypes, Component } from 'react'
+if (!global.navigator) global.navigator = {}
+
+require('md-gum-polyfill')
+const React = require('react')
+const { PropTypes, Component } = React
 
 export default class Camera extends Component {
   static constants = {
@@ -89,9 +93,9 @@ export default class Camera extends Component {
   }
 
   render() {
-    const { children, style, ...other } = this.props
+    const { children, style } = this.props
     return (
-      <div {...other}>
+      <div>
         <video
           ref="video"
           autoPlay
