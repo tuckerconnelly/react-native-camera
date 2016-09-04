@@ -39,6 +39,7 @@
   },
   "peerDependencies": {
     "react-native": "",
+    "react-native-universal": "",
     "react": ""
   },
   "dependencies": {

@@ -1,7 +1,11 @@
+/* eslint-disable react/no-string-refs */
+/* global navigator, URL */
+
 if (!global.navigator) global.navigator = {}
 
 require('md-gum-polyfill')
 const React = require('react')
+
 const { PropTypes, Component } = React
 
 export default class Camera extends Component {

@@ -4,13 +4,13 @@ let Camera
 
 switch (Platform.OS) {
   case 'ios':
-    Camera = require('./Camera.js')
+    Camera = require('./Camera')
     break
   case 'android':
-    Camera = require('./Camera.js')
+    Camera = require('./Camera')
     break
   case 'web':
-    Camera = require('./CameraWeb.js')
+    Camera = require('./CameraWeb')
     break
 }
 
