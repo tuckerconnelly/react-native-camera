@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define, react/no-string-refs */
+/* eslint-disable no-use-before-define, react/no-string-refs, react/sort-comp */
 import React, { Component, PropTypes } from 'react'
 
 import {
@@ -12,7 +12,7 @@ import {
 const CameraManager = NativeModules.CameraManager || NativeModules.CameraModule
 const CAMERA_REF = 'camera'
 
-function convertStringProps(props) {
+function convertNativeProps(props) {
   const newProps = { ...props }
   if (typeof props.aspect === 'string') {
     newProps.aspect = Camera.constants.Aspect[props.aspect]
@@ -129,6 +129,10 @@ export default class Camera extends Component {
   static checkVideoAuthorizationStatus = CameraManager.checkVideoAuthorizationStatus
   static checkAudioAuthorizationStatus = CameraManager.checkAudioAuthorizationStatus
 
+  setNativeProps(props) {
+    this.refs[CAMERA_REF].setNativeProps(props)
+  }
+
   constructor() {
     super()
     this.state = {
@@ -139,9 +143,12 @@ export default class Camera extends Component {
 
   async componentWillMount() {
     this.cameraBarCodeReadListener = NativeAppEventEmitter
-      .addListener('CameraBarCodeRead', this.props.onBarCodeRead)
+      .addListener('CameraBarCodeRead', this._onBarCodeRead)
 
-    const check = this.props.captureAudio ?
+    const { captureMode } = convertNativeProps({ captureMode: this.props.captureMode })
+    const hasVideoAndAudio = this.props.captureAudio &&
+      captureMode === Camera.constants.CaptureMode.video
+    const check = hasVideoAndAudio ?
       Camera.checkDeviceAuthorizationStatus :
       Camera.checkVideoAuthorizationStatus
 
@@ -159,29 +166,18 @@ export default class Camera extends Component {
     }
   }
 
-  getFOV() {
-    return CameraManager.getFOV()
+  render() {
+    const nativeProps = convertNativeProps(this.props)
+
+    return <RCTCamera ref={CAMERA_REF} {...nativeProps} />
   }
 
-  setNativeProps(props) {
-    this.refs[CAMERA_REF].setNativeProps(props)
-  }
-
-  stopCapture() {
-    if (this.state.isRecording) {
-      this.setState({ isRecording: false })
-      return CameraManager.stopCapture()
-    }
-
-    return Promise.resolve('Not Recording.')
-  }
-
-  _onBarCodeRead = (data) => {
+  _onBarCodeRead = data => {
     if (this.props.onBarCodeRead) this.props.onBarCodeRead(data)
-  };
+  }
 
   capture(options) {
-    const props = convertStringProps(this.props)
+    const props = convertNativeProps(this.props)
     options = {
       audio: props.captureAudio,
       barCodeTypes: props.barCodeTypes,
@@ -204,20 +200,27 @@ export default class Camera extends Component {
     return CameraManager.capture(options)
   }
 
+  stopCapture() {
+    if (this.state.isRecording) {
+      this.setState({ isRecording: false })
+      return CameraManager.stopCapture()
+    }
+
+    return Promise.resolve('Not Recording.')
+  }
+
+  getFOV() {
+    return CameraManager.getFOV()
+  }
+
   hasFlash() {
     if (Platform.OS === 'android') {
-      const props = convertStringProps(this.props)
+      const props = convertNativeProps(this.props)
       return CameraManager.hasFlash({
         type: props.type,
       })
     }
     return CameraManager.hasFlash()
-  }
-
-  render() {
-    const nativeProps = convertStringProps(this.props)
-
-    return <RCTCamera ref={CAMERA_REF} {...nativeProps} />
   }
 }
 
