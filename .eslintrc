@@ -23,6 +23,7 @@
     "import/no-unresolved": 0,
     "global-require": 0,
     "no-use-before-define": 0,
+    "no-underscore-dangle": 0,
 
     "react/jsx-closing-bracket-location": [1, "after-props"],
     "react/jsx-filename-extension": 0
