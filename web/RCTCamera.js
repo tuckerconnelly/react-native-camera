@@ -1,8 +1,5 @@
 /* global navigator, URL */
 
-if (!global.navigator) global.navigator = {}
-require('md-gum-polyfill')
-
 const React = require('react')
 
 const { PropTypes, Component, createElement } = React
@@ -43,9 +40,8 @@ class RCTCamera extends Component {
           ref: c => { this.video = c },
           autoPlay: true,
           style: Object.assign({}, styles.video, this.aspectStyles, style),
-        },
-          children
-        )
+        }),
+        children
       )
     )
   }

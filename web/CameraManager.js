@@ -1,12 +1,79 @@
 /* global navigator, URL */
 
 class CameraManager {
-  capture() {
+  constructor() {
+    this.Aspect = {
+      fit: 'fit',
+      fill: 'fill',
+      stretch: 'stretch',
+    }
+    this.BarCodeType = {}
+    this.CaptureMode = {
+      still: 'still',
+      video: 'video',
+    }
+    this.CaptureTarget = {
+      cameraRoll: 'cameraRoll',
+      disk: 'disk',
+      temp: 'temp',
+    }
+    this.CaptureQuality = {
+      high: 'high',
+      medium: 'medium',
+      low: 'low',
+      photo: 'photo',
+    }
+    this.Type = {
+      front: 'front',
+      back: 'back',
+    }
+    this.Orientation = {
+      auto: 'auto',
+      landscapeLeft: 'landscapeLeft',
+      landscapeRight: 'landscapeRight',
+      portrait: 'portrait',
+      portraitUpsideDown: 'portraitUpsideDown',
+    }
+    this.FlashMode = {
+      on: 'on',
+      off: 'off',
+      auto: 'auto',
+    }
+    this.TorchMode = {
+      on: 'on',
+      off: 'off',
+      auto: 'auto',
+    }
 
+    this.mediaRecorder = null
+  }
+
+  capture() {
+    return navigator.mediaDevices.getUserMedia({
+      video: true,
+    })
+      .then(stream => {
+        this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
+      })
+      .then(() => new Promise(resolve => {
+        this.mediaRecorder.start()
+
+        const chunks = []
+        this.mediaRecorder.ondataavailable = e => chunks.push(e.data)
+
+        this.mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/webm' })
+          const path = URL.createObjectURL(blob)
+
+          const reader = new FileReader()
+          reader.readAsDataURL(blob)
+          reader.onloadend = () => resolve({ path, data: reader.result })
+        }
+      }))
   }
 
   stopCapture() {
-
+    this.mediaRecorder.stop()
   }
 
   getFOV() {
@@ -18,47 +85,4 @@ class CameraManager {
   }
 }
 
-CameraManager.Aspect = {
-  fit: 'fit',
-  fill: 'fill',
-  stretch: 'stretch',
-}
-CameraManager.BarCodeType = {}
-CameraManager.CaptureMode = {
-  still: 'still',
-  video: 'video',
-}
-CameraManager.CaptureTarget = {
-  cameraRoll: 'cameraRoll',
-  disk: 'disk',
-  temp: 'temp',
-}
-CameraManager.CaptureQuality = {
-  high: 'high',
-  medium: 'medium',
-  low: 'low',
-  photo: 'photo',
-}
-CameraManager.Type = {
-  front: 'front',
-  back: 'back',
-}
-CameraManager.Orientation = {
-  auto: 'auto',
-  landscapeLeft: 'landscapeLeft',
-  landscapeRight: 'landscapeRight',
-  portrait: 'portrait',
-  portraitUpsideDown: 'portraitUpsideDown',
-}
-CameraManager.FlashMode = {
-  on: 'on',
-  off: 'off',
-  auto: 'auto',
-}
-CameraManager.TorchMode = {
-  on: 'on',
-  off: 'off',
-  auto: 'auto',
-}
-
-module.exports = CameraManager
+module.exports = new CameraManager()

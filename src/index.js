@@ -7,7 +7,7 @@ import {
   StyleSheet,
   requireNativeComponent,
   View,
-} from 'react-native';
+} from 'react-native-universal';
 
 const CameraManager = NativeModules.CameraManager || NativeModules.CameraModule;
 const CAMERA_REF = 'camera';
