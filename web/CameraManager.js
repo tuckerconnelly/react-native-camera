@@ -51,6 +51,7 @@ class CameraManager {
   capture() {
     return navigator.mediaDevices.getUserMedia({
       video: true,
+      audio: true,
     })
       .then(stream => {
         this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' })
