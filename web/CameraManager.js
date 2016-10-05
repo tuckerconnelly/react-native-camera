@@ -45,7 +45,9 @@ class CameraManager {
       auto: 'auto',
     }
 
-    this.mediaRecorder = null
+    // Mock so it doesn't fail when .getUserMedia fails (eg, when the user tries
+    // to capture without granting permission)
+    this.mediaRecorder = { stop: () => 0 }
   }
 
   capture() {
