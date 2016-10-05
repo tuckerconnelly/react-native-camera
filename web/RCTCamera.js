@@ -5,6 +5,7 @@ const React = require('react')
 const { PropTypes, Component, createElement } = React
 
 const CameraManager = require('./CameraManager')
+const pick = require('lodash/pick')
 
 class RCTCamera extends Component {
   constructor(...args) {
@@ -32,14 +33,17 @@ class RCTCamera extends Component {
   }
 
   render() {
-    const { children, style } = this.props
+    const { View } = require('react-native-web')
+    const { children } = this.props
+
+    const other = pick(this.props, Object.keys(View.propTypes))
 
     return (
-      createElement('div', null,
+      createElement(View, other,
         createElement('video', {
           ref: c => { this.video = c },
           autoPlay: true,
-          style: Object.assign({}, styles.video, this.aspectStyles, style),
+          style: Object.assign({}, styles.video, this.aspectStyles),
         }),
         children
       )
@@ -58,9 +62,6 @@ RCTCamera.propTypes = {
 
 const styles = {
   video: {
-    display: 'flex',
-    flex: 1,
-
     width: '100%',
     height: '100%',
 
