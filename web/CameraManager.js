@@ -65,12 +65,10 @@ class CameraManager {
         this.mediaRecorder.ondataavailable = e => chunks.push(e.data)
 
         this.mediaRecorder.onstop = () => {
-          const blob = new Blob(chunks, { type: 'video/webm' })
-          const path = URL.createObjectURL(blob)
+          const data = new Blob(chunks, { type: 'video/webm' })
+          const path = URL.createObjectURL(data)
 
-          const reader = new FileReader()
-          reader.readAsDataURL(blob)
-          reader.onloadend = () => resolve({ path, data: reader.result })
+          resolve({ path, data })
         }
       }))
   }
